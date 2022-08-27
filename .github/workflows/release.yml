@@ -23,6 +23,8 @@ jobs:
 
     - name: Build and test
       run: |
+        pwd
+        find . -maxdepth 1
         npm ci
         npm run generate
         npm run test
