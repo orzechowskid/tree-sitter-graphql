@@ -77,7 +77,7 @@ jobs:
 
     - name: Diags
       run: |
-        find graphql C:\Users\runneradmin
+        dir C:\Users\runneradmin
 
     - name: Create tar file
       uses: TheDoctor0/zip-release@0.6.2
