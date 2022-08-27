@@ -75,6 +75,10 @@ jobs:
         yarn generate
         yarn test
 
+    - name: Diags
+      run: |
+        dir C:\Users\runneradmin\AppData\Local
+
     - name: Create tar file
       uses: TheDoctor0/zip-release@0.6.2
       with:
