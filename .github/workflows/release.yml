@@ -28,12 +28,6 @@ jobs:
         yarn generate
         yarn test
         
-    - name: Diags
-      run: |
-        pwd
-        ls -l
-        find /home/runner -name 'graphql.so'
-
     - name: Create tar file
       uses: TheDoctor0/zip-release@0.6.2
       with:
@@ -110,16 +104,23 @@ jobs:
 
     - name: Build and test
       run: |
-        npm ci
-        npm run build --if-present
-        npm run test
+        npm install -g yarn
+        yarn
+        yarn generate
+        yarn test
+
+    - name: Diags
+      run: |
+        pwd
+        ls -l
+        find /Users/runner -name 'graphql.so'
 
     - name: Create tar file
       uses: TheDoctor0/zip-release@0.6.2
       with:
         type: tar
         directory: /Users/runner/Library/Caches/tree-sitter/bin
-        path: css_in_js.so
+        path: graphql.so
         filename: macos.tar.gz
 
     - name: Upload tarball
