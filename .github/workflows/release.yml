@@ -27,6 +27,12 @@ jobs:
         yarn
         yarn generate
         yarn test
+        
+    - name: Diags
+      run: |
+        pwd
+        ls -l
+        find . -name 'graphql.so'
 
     - name: Create tar file
       uses: TheDoctor0/zip-release@0.6.2
