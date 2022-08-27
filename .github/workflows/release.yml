@@ -75,15 +75,15 @@ jobs:
         yarn generate
         yarn test
 
-    - name: Diags
-      run: |
-        dir C:\Users\runneradmin
+#    - name: Diags
+#      run: |
+#        dir C:\Users\runneradmin
 
     - name: Create tar file
       uses: TheDoctor0/zip-release@0.6.2
       with:
         type: tar
-        directory: C:\Users\runneradmin\AppData\Local\tree-sitter\bin
+        directory: C:\Users\runneradmin\.tree-sitter\bin
         path: graphql.dll
         filename: windows.tar.gz
 
@@ -91,7 +91,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: windows-latest
-        path: C:\Users\runneradmin\AppData\Local\tree-sitter\bin\windows.tar.gz
+        path: C:\Users\runneradmin\.tree-sitter\bin\windows.tar.gz
         if-no-files-found: error
         retention-days: 1
 
