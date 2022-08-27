@@ -77,14 +77,14 @@ jobs:
 
     - name: Diags
       run: |
-        dir C:\Users\runneradmin\AppData\Local
+        find graphql C:\Users\runneradmin
 
     - name: Create tar file
       uses: TheDoctor0/zip-release@0.6.2
       with:
         type: tar
         directory: C:\Users\runneradmin\AppData\Local\tree-sitter\bin
-        path: css_in_js.dll
+        path: graphql.dll
         filename: windows.tar.gz
 
     - name: Upload tarball
