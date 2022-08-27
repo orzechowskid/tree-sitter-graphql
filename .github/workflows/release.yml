@@ -39,7 +39,7 @@ jobs:
       with:
         type: tar
         directory: /home/runner/.tree-sitter/bin
-        path: css_in_js.so
+        path: graphql.so
         filename: linux.tar.gz
         
     - name: Upload tarball
