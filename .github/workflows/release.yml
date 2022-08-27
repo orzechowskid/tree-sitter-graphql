@@ -1,0 +1,151 @@
+name: Auto-release
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build-release-linux:
+    runs-on: ubuntu-latest
+
+    permissions:
+        contents: write
+
+    steps:
+    - name: Get Node.js ${{ matrix.node-version }}
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Build and test
+      run: |
+        npm ci
+        npm run generate
+        npm run test
+
+    - name: Create tar file
+      uses: TheDoctor0/zip-release@0.6.2
+      with:
+        type: tar
+        directory: /home/runner/.tree-sitter/bin
+        path: css_in_js.so
+        filename: linux.tar.gz
+        
+    - name: Upload tarball
+      uses: actions/upload-artifact@v3
+      with:
+        name: linux-latest
+        path: /home/runner/.tree-sitter/bin/linux.tar.gz
+        if-no-files-found: error
+        retention-days: 1
+
+
+  build-release-windows:
+    runs-on: windows-latest
+
+    permissions:
+        contents: write
+
+    steps:
+
+    - name: Get Node.js ${{ matrix.node-version }}
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Build and test
+      run: |
+        npm ci
+        npm run build --if-present
+        npm run test
+
+    - name: Create tar file
+      uses: TheDoctor0/zip-release@0.6.2
+      with:
+        type: tar
+        directory: C:\Users\runneradmin\AppData\Local\tree-sitter\bin
+        path: css_in_js.dll
+        filename: windows.tar.gz
+
+    - name: Upload tarball
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-latest
+        path: C:\Users\runneradmin\AppData\Local\tree-sitter\bin\windows.tar.gz
+        if-no-files-found: error
+        retention-days: 1
+
+
+  build-release-macos:
+    runs-on: macos-latest
+
+    permissions:
+        contents: write
+
+    steps:
+
+    - name: Get Node.js ${{ matrix.node-version }}
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Build and test
+      run: |
+        npm ci
+        npm run build --if-present
+        npm run test
+
+    - name: Create tar file
+      uses: TheDoctor0/zip-release@0.6.2
+      with:
+        type: tar
+        directory: /Users/runner/Library/Caches/tree-sitter/bin
+        path: css_in_js.so
+        filename: macos.tar.gz
+
+    - name: Upload tarball
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos-latest
+        path: /Users/runner/Library/Caches/tree-sitter/bin/macos.tar.gz
+        if-no-files-found: error
+        retention-days: 1
+
+
+  generate-release:
+    runs-on: ubuntu-latest
+    
+    needs: [ build-release-macos, build-release-windows, build-release-linux ]
+    #needs: [ build-release-linux ]
+    permissions:
+      contents: write
+      
+    steps:
+    
+    - name: Collect tarballs
+      uses: actions/download-artifact@v3
+      with:
+        path: ./artifacts
+    - name: Publish release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: "Grammar binaries bundle"
+        files: |
+          artifacts/linux-latest/linux.tar.gz
+          artifacts/windows-latest/windows.tar.gz
+          artifacts/macos-latest/macos.tar.gz
