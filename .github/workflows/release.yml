@@ -75,11 +75,6 @@ jobs:
         yarn generate
         yarn test
 
-    - name: Diags
-      run: |
-        pwd
-        dir /w
-
     - name: Create tar file
       uses: TheDoctor0/zip-release@0.6.2
       with:
